@@ -1,5 +1,5 @@
 import { WebSocketServer } from 'ws'; // Import WebSocketServer explicitly
-import { expiredTokens } from './app'; // Import expiredTokens
+import { expiredTokens } from './app.js'; // Import expiredTokens
 import JWT from 'jsonwebtoken'; // Import JWT for token verification
 
 export function setupWebSocketServer(server) {

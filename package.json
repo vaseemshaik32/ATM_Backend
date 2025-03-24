@@ -1,0 +1,15 @@
+{
+  "type": "module",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "heap-js": "^2.6.0",
+    "jsonwebtoken": "^9.0.2",
+    "mnemonist": "^0.40.3",
+    "mongodb": "^6.12.0",
+    "mongoose": "^8.9.5",
+    "uuid": "^11.0.5",
+    "ws": "^8.18.0"
+  }
+}

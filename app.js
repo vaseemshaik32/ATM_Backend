@@ -13,11 +13,14 @@ import cors from 'cors';
 dotenv.config()
 const app=express()
 app.use(express.json());
+app.use(cors({
+    origin: 'https://frontend-abx0.onrender.com', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+    credentials: true, 
+}));
 export const expiredTokens = new Set();
 const server = http.createServer(app); 
-app.use(cors());
 setupWebSocketServer(server)
-
 mongoose.connect(process.env.MONGO_URL) .then(() => console.log('connected'))
 .catch(err => console.error('Could not connect to MongoDB:', err));
 app.get('/',(req,res)=>res.json('hello world'))

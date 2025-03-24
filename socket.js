@@ -1,7 +1,7 @@
 import { WebSocketServer } from 'ws'; // Import WebSocketServer explicitly
 import { expiredTokens } from './app.js'; // Import expiredTokens
 import JWT from 'jsonwebtoken'; // Import JWT for token verification
-import userstats from './userstats';
+import userstats from './userstats.js';
 export function setupWebSocketServer(server) {
     const connections = {}; // To store user connections by their `myid`
     const soktotok = new Map(); // Use Map to store WebSocket associations as [token, myid]

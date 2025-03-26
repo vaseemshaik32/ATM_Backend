@@ -103,7 +103,7 @@ export function setupWebSocketServer(server) {
                         const curuid = verifyToken(token);
 
                         // Perform logout actions
-                        await userstats.findOneAndUpdate({ userid: curuid }, { latitude: 0, longitude: 0 });
+                        await userstats.findOneAndUpdate({ userid: curuid }, { userlat: 0, userlong: 0 });
                         await userstats.findOneAndUpdate({ userid: curuid }, { status: false });
                         await userstats.findOneAndUpdate({ userid: curuid }, { needscash: false, needsdigital: false });
                         await userstats.findOneAndUpdate({ userid: curuid }, { tranamount: 0 });

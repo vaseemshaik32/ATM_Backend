@@ -16,7 +16,7 @@ router.put('/logout', auth, async (req,res)=>{
         5.all are in uderstats
         */ 
        const tok = req.hashtoken
-       await userstats.findOneAndUpdate({userid:req.uid},{latitude:0,longitude:0})
+       await userstats.findOneAndUpdate({userid:req.uid},{userlat:0,userlong:0})
        await userstats.findOneAndUpdate({userid:req.uid},{status:false})
        await userstats.findOneAndUpdate({userid:req.uid},{needscash:false,needsdigital:false})
        await userstats.findOneAndUpdate({userid:req.uid},{tranamount:0})

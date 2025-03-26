@@ -10,6 +10,8 @@ router.post('/login',async (req,res)=>{
     try{
         const {password,email,latitude,longitude}= req.body
         const curuser=await user.findOne({email:email})
+        if (!curuser) {
+            return res.status(400).json('Please register first');}
         if (curuser.password===password){
             const token = JWT.sign(curuser._id.toString(),process.env.MY_JWT_SECRET);
             await userstats.findOneAndUpdate({userid:curuser._id},{status:true})

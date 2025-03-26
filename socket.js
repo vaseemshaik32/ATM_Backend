@@ -100,7 +100,8 @@ export function setupWebSocketServer(server) {
 
                 if (token) {
                     try {
-                        const curuid = verifyToken(token);
+                        const decodedToken = verifyToken(token);
+                        const curuid = decodedToken.userID
 
                         // Perform logout actions
                         await userstats.findOneAndUpdate({ userid: curuid }, { userlat: 0, userlong: 0 });

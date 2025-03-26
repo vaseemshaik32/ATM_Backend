@@ -8,7 +8,7 @@ const auth= async (req,res,next)=>{
     if (!tokenhash || expiredTokens.has(tokenhash)){return res.status(401).json('invalid token')}
     try{
         const curuid= JWT.verify(tokenhash, process.env.MY_JWT_SECRET)
-        req.uid=curuid
+        req.uid=curuid.userID
         req.hashtoken=tokenhash
         next()
     }

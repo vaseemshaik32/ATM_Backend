@@ -1,10 +1,8 @@
-import { WebSocketServer } from 'ws'; // Import WebSocketServer explicitly
-import { expiredTokens } from './app.js'; // Import expiredTokens
-import JWT from 'jsonwebtoken'; // Import JWT for token verification
-import userstats from './userstats.js';
 export function setupWebSocketServer(server) {
     const connections = {}; // To store user connections by their `myid`
     const soktotok = new Map(); // Use Map to store WebSocket associations as [token, myid]
+    const cleanupTimeouts = {}; // Store timeouts for cleanup per user
+
     const wss = new WebSocketServer({ server });
 
     wss.on('connection', (ws, req) => {
@@ -12,20 +10,26 @@ export function setupWebSocketServer(server) {
         const myid = urlParams.get('myid'); // User's unique identifier
         const logintoken = urlParams.get('logintoken'); // Login token
 
-        // Store the [token, myid] array using the WebSocket as the key
-        soktotok.set(ws, [logintoken, myid]);
+        // Check if this user is reconnecting
+        if (connections[myid]) {
+            console.log(`User ${myid} reconnected`);
+            clearTimeout(cleanupTimeouts[myid]); // Cancel any pending cleanup
+            connections[myid][0] = ws; // Update WebSocket for the user
+            soktotok.set(ws, [logintoken, myid]); // Map new WebSocket
+            return;
+        }
 
-        // Store the WebSocket and paired users in the connections hashmap
-        connections[myid] = [ws, []];
+        // New connection setup
+        soktotok.set(ws, [logintoken, myid]);
+        connections[myid] = [ws, []]; // [WebSocket, pairedUsers]
         console.log(`New client connected with the id ${myid}`);
 
         ws.on('message', (message) => {
             const Message = JSON.parse(message);
 
-            // Handle various message types
             if (Message.type === 'connect') {
                 try {
-                    const acceptorWs = connections[Message.acceptorid][0]; // Get acceptor's WebSocket
+                    const acceptorWs = connections[Message.acceptorid][0];
                     acceptorWs.send(
                         JSON.stringify({
                             type: 'connectrequest',
@@ -42,11 +46,9 @@ export function setupWebSocketServer(server) {
                     const requestfrom = Message.requestfrom;
                     const requestto = Message.requestto;
 
-                    // Manage pairing
                     connections[requestfrom][1].push(requestto);
                     connections[requestto][1].push(requestfrom);
 
-                    // Notify initiator
                     connections[requestfrom][0].send(
                         JSON.stringify({
                             type: 'acceptedbythematch',
@@ -57,13 +59,12 @@ export function setupWebSocketServer(server) {
                 } catch (error) {
                     console.log(error);
                 }
-            } else {
+            } else if (Message.type === 'message') {
                 try {
                     const msgfrom = Message.msgfrom.toString();
                     const msg = Message.msg;
                     const msgto = Message.msgto;
 
-                    // Ensure users are paired before sending a message
                     if (connections[msgfrom][1].includes(msgto)) {
                         connections[msgto][0].send(
                             JSON.stringify({
@@ -82,50 +83,50 @@ export function setupWebSocketServer(server) {
             }
         });
 
-        const verifyToken = (token) => {
-            if (!token || expiredTokens.has(token)) {
-                throw new Error('Invalid token');
-            }
-            return JWT.verify(token, process.env.MY_JWT_SECRET);
-        };
-
         ws.on('close', async () => {
-            console.log('Client disconnected');
+            console.log(`WebSocket closed for user ${myid}`);
 
-            // Retrieve the [token, myid] array using the WebSocket as the key
             const data = soktotok.get(ws);
-
             if (data) {
-                const [token, myid] = data; // Destructure the array to get token and myid
+                const [token, myid] = data;
 
-                if (token) {
-                    try {
-                        const decodedToken = verifyToken(token);
-                        const curuid = decodedToken.userID
+                // Delay cleanup to allow reconnection
+                cleanupTimeouts[myid] = setTimeout(async () => {
+                    console.log(`Cleaning up for user ${myid}`);
 
-                        // Perform logout actions
-                        await userstats.findOneAndUpdate({ userid: curuid }, { userlat: 0, userlong: 0 });
-                        await userstats.findOneAndUpdate({ userid: curuid }, { status: false });
-                        await userstats.findOneAndUpdate({ userid: curuid }, { needscash: false, needsdigital: false });
-                        await userstats.findOneAndUpdate({ userid: curuid }, { tranamount: 0 });
-                        expiredTokens.add(token);
-                        console.log(`User ${curuid} logged out successfully on WebSocket close.`);
-                    } catch (error) {
-                        console.error('Error verifying token during WebSocket close:', error);
+                    if (token) {
+                        try {
+                            const decodedToken = verifyToken(token);
+                            const curuid = decodedToken.userID;
+
+                            // Perform logout actions
+                            await userstats.findOneAndUpdate({ userid: curuid }, { userlat: 0, userlong: 0 });
+                            await userstats.findOneAndUpdate({ userid: curuid }, { status: false });
+                            await userstats.findOneAndUpdate({ userid: curuid }, { needscash: false, needsdigital: false });
+                            await userstats.findOneAndUpdate({ userid: curuid }, { tranamount: 0 });
+                            expiredTokens.add(token);
+                            console.log(`User ${curuid} logged out successfully.`);
+                        } catch (error) {
+                            console.error('Error during cleanup:', error);
+                        }
                     }
-                }
 
-                // Clean up connections
-                delete connections[myid]; // Remove user from connections
+                    // Remove connections
+                    delete connections[myid];
+                    soktotok.delete(ws);
+                }, 10000); // 10-second timeout for reconnection
             } else {
                 console.error('No token or myid found for the disconnected WebSocket.');
             }
-
-            soktotok.delete(ws); // Remove WebSocket entry from soktotok
         });
     });
 
+    const verifyToken = (token) => {
+        if (!token || expiredTokens.has(token)) {
+            throw new Error('Invalid token');
+        }
+        return JWT.verify(token, process.env.MY_JWT_SECRET);
+    };
+
     return wss;
 }
-
-export default setupWebSocketServer;

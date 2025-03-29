@@ -106,7 +106,7 @@ ws.on('close', async () => {
         if (elapsedSeconds >= 6) {
             console.log('Condition not met for 10 seconds. Executing logout .');
             clearInterval(interval); // Stop the interval
-            handlewindowclose(ws,soktotok); // Call the foobar function
+            handlewindowclose(ws,soktotok,connections); // Call the foobar function
         }
     }, 1000); // Check every 1 second
 });
@@ -123,7 +123,7 @@ const VerifyToken = (token) => {
         }
         return JWT.verify(token, process.env.MY_JWT_SECRET);
     };
-async function handlewindowclose(ws,soktotok){
+async function handlewindowclose(ws,soktotok,connections){
         // Retrieve the [token, myid] array using the WebSocket as the key
     const data = soktotok.get(ws);
 

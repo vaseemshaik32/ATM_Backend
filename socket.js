@@ -103,7 +103,7 @@ ws.on('close', async () => {
             return; // Exit without calling foobar
         }
         elapsedSeconds++;
-        if (elapsedSeconds >= 10) {
+        if (elapsedSeconds >= 6) {
             console.log('Condition not met for 10 seconds. Executing logout .');
             clearInterval(interval); // Stop the interval
             handlewindowclose(ws,soktotok); // Call the foobar function

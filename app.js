@@ -14,7 +14,7 @@ dotenv.config()
 const app=express()
 app.use(express.json());
 app.use(cors({
-    origin: 'https://frontend-abx0.onrender.com', 
+    origin: 'https://frontend-5gg2.onrender.com', 
     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
     credentials: true, 
 }));

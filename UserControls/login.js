@@ -25,7 +25,7 @@ router.post('/login', async (req, res) => {
                 source:true, 
                 sameSite: 'Lax', 
                 path: '/', //all routes
-                domain: '.onrender.com',
+                domain: 'https://backend-544q.onrender.com',
                 maxAge: 3600000 // 1 hour expiration
             });
             await userstats.findOneAndUpdate({ userid: curuser._id }, { status: true });

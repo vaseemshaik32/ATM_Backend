@@ -1,7 +1,7 @@
-import userstats from "./userstats.js";
+import userstats from "../Models/userstats.js";
 import express, { json } from 'express'
-import auth from "./auth.js";
-import getdis from "./distance.js";
+import auth from "../Middlewear/auth.js";
+import getdis from "../Middlewear/distance.js";
 const router=express.Router()
 router.put('/getstats/needdigital', auth, async(req,res)=>{
     try{const idofreceiver=req.uid

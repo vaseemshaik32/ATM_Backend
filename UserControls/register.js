@@ -1,6 +1,6 @@
 import express from 'express'
-import user from './Users.js'
-import userstats from './userstats.js'
+import user from '../Models/Users.js'
+import userstats from '../Models/userstats.js'
 const router= express.Router()
 router.post('/register',async (req,res)=>{
 //create a new user obj and save it to the db

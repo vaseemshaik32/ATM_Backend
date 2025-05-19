@@ -1,6 +1,6 @@
 import JWT from 'jsonwebtoken'
 import dotenv from 'dotenv'
-import { expiredTokens } from './app.js'
+import { expiredTokens } from '../app.js'
 dotenv.config()
 const auth= async (req,res,next)=>{
     const tokenhash= req.header('Authorization')?.replace('Bearer ','')

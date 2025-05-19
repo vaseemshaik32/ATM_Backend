@@ -1,14 +1,15 @@
 import mongoose from "mongoose";
 import express from 'express';
+import client from "./Servers/redis.js";
 import http from 'http'
-import loginrouter from "./login.js";
-import registerrouter from "./register.js";
-import statsrouter from './getstats.js'
+import loginrouter from "./UserControls/login.js";
+import registerrouter from "./UserControls/register.js";
+import statsrouter from './UserControls/getstats.js'
 import dotenv from 'dotenv'
-import needdigitalrouter from './needdigital.js'
-import needcashrouter from './needcash.js'
-import logoutrouter from './logout.js'
-import { setupWebSocketServer } from "./socket.js";
+import needdigitalrouter from './Services/needdigital.js'
+import needcashrouter from './Services/needcash.js'
+import logoutrouter from './UserControls/logout.js'
+import { setupWebSocketServer } from "./Servers/socket.js";
 import cors from 'cors';
 dotenv.config()
 const app=express()

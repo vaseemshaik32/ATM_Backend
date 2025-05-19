@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
-import userstats from './userstats.js'
-import auth from './auth.js'
+import userstats from '../Models/userstats.js'
+import auth from '../Middlewear/auth.js'
 import express from 'express'
 dotenv.config()
 const router= express.Router()

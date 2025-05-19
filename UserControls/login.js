@@ -1,8 +1,8 @@
 import express from 'express'
-import user from './Users.js'
+import user from '../Models/Users.js'
 import dotenv from 'dotenv'
 import JWT from 'jsonwebtoken'
-import userstats from './userstats.js'
+import userstats from '../Models/userstats.js'
 const router= express.Router()
 dotenv.config()
 router.post('/login', async (req, res) => {

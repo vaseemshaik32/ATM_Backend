@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import { expiredTokens } from '../app.js'
 dotenv.config()
 const auth= async (req,res,next)=>{
-    console.log(req)
+    console.log(req.header.cookie)
     const tokenhash = req.cookies?.token 
     console.log(tokenhash)
     if (!tokenhash || expiredTokens.has(tokenhash)){return res.status(401).json('invalid token')}

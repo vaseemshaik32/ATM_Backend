@@ -22,7 +22,7 @@ router.post('/login', async (req, res) => {
             const token = JWT.sign(payload, process.env.MY_JWT_SECRET);
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production', 
+                source:true, 
                 sameSite: 'Lax', 
                 path: '/', //all routes
                 domain: '.onrender.com',

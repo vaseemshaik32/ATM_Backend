@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import express from 'express';
 import client from "./Servers/redis.js";
 import http from 'http'
+import cookieParser from "cookie-parser";
 import loginrouter from "./UserControls/login.js";
 import registerrouter from "./UserControls/register.js";
 import statsrouter from './UserControls/getstats.js'
@@ -13,6 +14,7 @@ import { setupWebSocketServer } from "./Servers/socket.js";
 import cors from 'cors';
 dotenv.config()
 const app=express()
+app.use(cookieParser())
 app.use(express.json());
 app.use(cors({
     origin: 'https://frontend-5gg2.onrender.com', 

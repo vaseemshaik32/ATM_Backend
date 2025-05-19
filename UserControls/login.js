@@ -20,6 +20,14 @@ router.post('/login', async (req, res) => {
                 iat: Math.floor(Date.now() / 1000), // Issued-at timestamp for uniqueness
             };
             const token = JWT.sign(payload, process.env.MY_JWT_SECRET);
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production', 
+                sameSite: 'Lax', 
+                path: '/', //all routes
+                domain: '.onrender.com',
+                maxAge: 3600000 // 1 hour expiration
+            });
             await userstats.findOneAndUpdate({ userid: curuser._id }, { status: true });
             try {
                 await userstats.findOneAndUpdate({ userid: curuser._id }, { userlat: latitude, userlong: longitude });

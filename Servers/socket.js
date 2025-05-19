@@ -8,9 +8,10 @@ export function setupWebSocketServer(server) {
     const wss = new WebSocketServer({ server });
 
     wss.on('connection', (ws, req) => {
+        const cookies = parse(req.headers.cookie || '');
+        const logintoken = cookies.token; // Get from HttpOnly cookie
         const urlParams = new URLSearchParams(req.url.split('?')[1]);
         const myid = urlParams.get('myid'); // User's unique identifier
-        const logintoken = urlParams.get('logintoken'); // Login token
         ws.myid=myid
         if (expiredTokens.has(logintoken)) {
         console.log(`Connection attempt with expired token for user ${myid}`);

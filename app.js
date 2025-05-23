@@ -17,10 +17,11 @@ const app=express()
 app.use(cookieParser())
 app.use(express.json());
 app.use(cors({
-    origin: 'https://frontend-5gg2.onrender.com', 
+    origin: ['https://chicken-fish.site', 'https://www.chicken-fish.site'], 
     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
     credentials: true, 
 }));
+
 export const expiredTokens = new Set();
 const server = http.createServer(app); 
 setupWebSocketServer(server)

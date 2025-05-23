@@ -20,6 +20,7 @@ app.use(cors({
     origin: ['https://chicken-fish.site', 'https://www.chicken-fish.site'], 
     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
     credentials: true, 
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'] 
 }));
 
 export const expiredTokens = new Set();

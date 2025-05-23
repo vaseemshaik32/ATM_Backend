@@ -31,7 +31,7 @@ router.post('/login', async (req, res) => {
             await userstats.findOneAndUpdate({ userid: curuser._id }, { status: true });
             try {
                 await userstats.findOneAndUpdate({ userid: curuser._id }, { userlat: latitude, userlong: longitude });
-                res.status(200).json({ token, usernameforreact: curuser.username });
+                res.status(200).json({ usernameforreact: curuser.username });
             } catch (error) {
                 res.status(200).json('logged in but failed to add location');
             }

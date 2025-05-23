@@ -22,10 +22,10 @@ router.post('/login', async (req, res) => {
             const token = JWT.sign(payload, process.env.MY_JWT_SECRET);
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: false,  
-                sameSite: 'Lax', 
+                secure: true,  
+                sameSite: "None", 
                 path: '/', 
-                domain: '.chicken-fish.site', //  custom domain hehehe
+                domain: 'chicken-fish.site', //  custom domain hehehe
                 maxAge: 3600000 // 1 hour expiration
             });            
             await userstats.findOneAndUpdate({ userid: curuser._id }, { status: true });

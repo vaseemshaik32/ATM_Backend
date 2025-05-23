@@ -22,8 +22,8 @@ router.post('/login', async (req, res) => {
             const token = JWT.sign(payload, process.env.MY_JWT_SECRET);
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: true,  
-                sameSite: 'None', 
+                secure: false,  
+                sameSite: 'Lax', 
                 path: '/', 
                 domain: '.chicken-fish.site', //  custom domain hehehe
                 maxAge: 3600000 // 1 hour expiration
